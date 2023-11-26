@@ -16,13 +16,11 @@ ellipsoid_height = ""
 def build_ght(lat, lon):
     # Build and return a URL to talk to the GHT API
     new_url = f"{ght_url}lat={lat}&lon={lon}"
-    print(new_url)
     return new_url
 
 def build_ncat(xyz_array):
     # Build and return a URL to talk to the NCAT API
     new_url = f"{ncat_url}inDatum=nad83(2011)&outDatum=nad83(2011)&x={xyz_array[0]}&y={xyz_array[1]}&z={xyz_array[2]}"
-    print(new_url)
     return new_url
 
 def call_api(url):
@@ -34,21 +32,17 @@ def call_api(url):
             return json.dumps(resp)
             # returning the JSON as a string because it creates a bug if it is returned as a dict
         else:
-            # Notify the user that the request has failed in some way and return errored JSON
-            #print("Response not a success. Response Code: ", response.status_code)
-            #return "{'srcLat' : 'ERROR', 'srcLon' : 'ERROR', 'srcEht' : 'ERROR'}"
+            # Request is not a success. Raise exception to notify the user.
             raise Exception("Response not a success. Response Code: ", response.status_code)
     except:
-        # Notify the user that there was a critical error in some way and return errored JSON
-        #print("There was an error when calling the API")
-        #return "{'srcLat' : 'ERROR', 'srcLon' : 'ERROR', 'srcEht' : 'ERROR'}"
+        # Some kind of error occured. Raise exception and notify the user.
+        # Code is likely never to be used as the URLs are specifically built so this should never occur.
         raise Exception("There was an error when calling the API")
 
 def convert_coordinates(xyz_array):
     # Calls on the NGS coordinate conversion API and returns an array with the converted values
     lat_lon_height = []
     data = json.loads(call_api(build_ncat(xyz_array)))
-    #print(data)
     lat_lon_height.append(data['srcLat'])
     lat_lon_height.append(data['srcLon'])
     lat_lon_height.append(data['srcEht'])
@@ -61,7 +55,6 @@ def clean_coordinate(coord):
     return coord
 
 def geodedic_height(lat, lon):
-    print(lat, lon)
     # Calls on the NGS Geoid Height Service API. Returns the geoid height
     data = json.loads(call_api(build_ght(lat, lon)))
     if data == {}:
@@ -102,7 +95,6 @@ def main():
     try:
         # Convert the XYZ coordinates to Latitude, Longitude, and Ellipsoid Height
         converted = convert_coordinates(xyz)
-        print(converted)
         latitude = converted[0]
         longitude = converted[1]
         ellipsoid_height = converted[2]
