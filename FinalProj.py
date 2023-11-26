@@ -25,19 +25,14 @@ def build_ncat(xyz_array):
 
 def call_api(url):
     # Pass in a URL and attempt a request
-    try:
-        response = requests.get(url)
-        if response.status_code == 200:
-            resp = response.json()
-            return json.dumps(resp)
-            # returning the JSON as a string because it creates a bug if it is returned as a dict
-        else:
-            # Request is not a success. Raise exception to notify the user.
-            raise Exception("Response not a success. Response Code: ", response.status_code)
-    except:
-        # Some kind of error occured. Raise exception and notify the user.
-        # Code is likely never to be used as the URLs are specifically built so this should never occur.
-        raise Exception("There was an error when calling the API")
+    response = requests.get(url)
+    if response.status_code == 200:
+        resp = response.json()
+        return json.dumps(resp)
+        # returning the JSON as a string because it creates a bug if it is returned as a dict
+    else:
+        # Request is not a success. Raise exception to notify the user.
+        raise Exception("Response not a success. Response Code: ", response.status_code)
 
 def convert_coordinates(xyz_array):
     # Calls on the NGS coordinate conversion API and returns an array with the converted values
