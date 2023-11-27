@@ -53,7 +53,7 @@ def geodedic_height(lat, lon):
     # Calls on the NGS Geoid Height Service API. Returns the geoid height
     data = json.loads(call_api(build_ght(lat, lon)))
     if data == {}:
-        raise Exception("Geoid Data Empty. Likely poor coordinates entered.")
+        raise Exception("Geoid Data Empty. Coordinates provided not within the Continenal US.")
     else:
         return data['geoidHeight']
 
@@ -104,8 +104,4 @@ def main():
 # Run the program
 main()
 
-# It is known to work with the coordinates:
-# X: -217,687.297
-# Y: -5,069,012.421
-# Z: 3,852,223.063
-# However, some coordinates do not return a geoid height and it is unknown why.
+# Works for coordinates within the continental US
