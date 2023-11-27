@@ -32,7 +32,7 @@ def call_api(url):
         # returning the JSON as a string because it creates a bug if it is returned as a dict
     else:
         # Request is not a success. Raise exception to notify the user.
-        raise Exception("Response not a success. Response Code: ", response.status_code)
+        raise Exception(f"Response not a success. Response Code: {response.status_code}")
 
 def convert_coordinates(xyz_array):
     # Calls on the NGS coordinate conversion API and returns an array with the converted values
@@ -53,7 +53,7 @@ def geodedic_height(lat, lon):
     # Calls on the NGS Geoid Height Service API. Returns the geoid height
     data = json.loads(call_api(build_ght(lat, lon)))
     if data == {}:
-        raise Exception("Geoid Data Empty. Coordinates provided not within the Continenal US.")
+        raise Exception("Geoid Data Empty. Coordinates provided likely not within the Continental US.\nWorking coordinates:\nX: -200,000 Y: -5,000,000 Z: 4,000,000")
     else:
         return data['geoidHeight']
 
@@ -99,9 +99,14 @@ def main():
         # Display the outcome to the user
         print(f"\nLatitude: {latitude}\nLongitude: {longitude}\nEllipsoid Height: {ellipsoid_height}\nGeoid Height: {geoid_height}\nElevation: {elevation}")
     except Exception as e:
-        print("An error has occured: ", e)
+        print("\nAn error has occured: ", e)
 
 # Run the program
 main()
 
 # Works for coordinates within the continental US
+
+# Testing coordinates
+# x	"-200,000"
+# y	"-5,000,000"
+# z	"4,000,000"
